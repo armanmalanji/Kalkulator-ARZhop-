@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3498db">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Abu Zaid">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>Kalkulator Abu Zaid</title>
+
+<style>
+:root {
+--bg: #f0f2f5; --card: #ffffff; --text: #333; --primary: #3498db; --secondary: #2c3e50;
+}
+.dark-mode {
+--bg: #1a1a1a; --card: #2d2d2d; --text: #f0f0f0; --primary: #3498db; --secondary: #ecf0f1;
+}
+body { font-family: sans-serif; background-color: var(--bg); margin: 0; padding: 15px; color: var(--text); transition: 0.3s; }
+.container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; }
+
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
+h2 { margin: 0; color: var(--secondary); font-size: 18px; letter-spacing: 1px; }
+.dark-mode h2 { color: var(--primary); }
+.header-actions { display: flex; gap: 8px; }
+.theme-toggle, .install-btn { background: var(--secondary); color: var(--card); border: none; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: bold; }
+.install-btn { background: #e67e22; display: none; } /* Tersembunyi sampai PWA siap diinstal */
+
+.tab-menu { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn { flex: 1; min-width: 80px; padding: 10px 5px; border: none; background: #dfe6e9; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 10px; color: #636e72; }
+.tab-btn.active { background: var(--primary); color: white; }
+
+.section-pintu, .section-kaca { display: none; }
+.active-section { display: block; }
+
+.grid-input { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.input-group { margin-bottom: 10px; }
+label { display: block; font-size: 11px; margin-bottom: 4px; font-weight: bold; opacity: 0.8; }
+input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; background: var(--card); color: var(--text); font-size: 16px; outline: none; box-sizing: border-box; }
+
+.qty-box { background: #e8f4fd; padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--primary); }
+.dark-mode .qty-box { background: #1e3a5a; }
+
+button.hitung-btn { width: 100%; padding: 16px; background: #27ae60; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+
+.result { margin-top: 10px; display: none; }
+.result-item { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-left: 8px solid var(--primary); position: relative; }
+.res-text h4 { margin: 0; color: var(--primary); font-size: 11px; text-transform: uppercase; }
+.res-text div { font-weight: bold; font-size: 18px; color: #d35400; margin-top: 5px; }
+
+.wa-btn { width: 100%; padding: 15px; background: #25d366; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; display: block; text-decoration: none; text-align: center; }
+.print-btn { width: 100%; padding: 15px; background: #34495e; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+.settings-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 12px; text-decoration: underline; margin-top: 10px; display: block; }
+#settingsArea, #rumusSettingsArea { display: none; padding: 15px; background: #f9f9f9; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; }
+.dark-mode #settingsArea, .dark-mode #rumusSettingsArea { background: #333; border-color: #444; }
+
+.btn-save { background: #3498db; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+.btn-reset { background: #e74c3c; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+
+#riwayat-section { margin-top: 30px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--card); margin-top: 10px; }
+th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+th { background: var(--primary); color: white; }
+
+.footer-credit { text-align: center; font-size: 15px; color: var(--secondary); margin-top: 30px; font-weight: bold; border-top: 2px solid var(--primary); padding-top: 15px; letter-spacing: 1px; }
+
+@media print {
+.theme-toggle, .install-btn, .tab-menu, .qty-box, .grid-input, .hitung-btn, .wa-btn, .print-btn, #riwayat-section, .settings-btn, #settingsArea, #rumusSettingsArea, .footer-credit { display: none !important; }
+.result { display: block !important; }
+.container { box-shadow: none; width: 100%; border: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<div class="header">
+<h2>KALKULATOR ABU ZAID</h2>
+<div class="header-actions">
+<button id="install-btn" class="install-btn" onclick="installApp()">⬇️ Install</button>
+<button class="theme-toggle" onclick="toggleTheme()">🌙 Mode</button>
+</div>
+</div>
+
+<div class="tab-menu">
+<button id="btn-swing" class="tab-btn active" onclick="switchTab('swing')">SWING (4")</button>
+<button id="btn-km" class="tab-btn" onclick="switchTab('km')">KM (3")</button>
+<button id="btn-lipat" class="tab-btn" onclick="switchTab('lipat')">LIPAT (4")</button>
+<button id="btn-kaca" class="tab-btn" onclick="switchTab('kaca')" style="background: #e67e22; color: white;">HARGA KACA</button>
+</div>
+
+<div id="section-pintu" class="section-pintu active-section">
+<div class="qty-box">
+<label>Jumlah Pintu:</label>
+<input type="number" id="jml_pintu" value="1" min="1">
+</div>
+<div class="grid-input">
+<div class="input-group"><label>Plong Kanan</label><input type="number" id="p_kanan" placeholder="0.0"></div>
+<div class="input-group"><label>Plong Kiri</label><input type="number" id="p_kiri" placeholder="0.0"></div>
+<div class="input-group"><label>Plong Atas</label><input type="number" id="l_atas" placeholder="0.0"></div>
+<div class="input-group"><label>Plong Bawah</label><input type="number" id="l_bawah" placeholder="0.0"></div>
+</div>
+<button class="hitung-btn" onclick="hitungPintu()">PROSES POTONGAN</button>
+
+<button class="settings-btn" onclick="toggleRumusSettings()">⚙️ Atur Rumus <span id="label-rumus-aktif">Swing</span></button>
+<div id="rumusSettingsArea">
+<p style="margin-top:0; font-size:12px; font-weight:bold; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">Pengurangan (-)</p>
+<div class="grid-input">
+<div class="input-group"><label>Kusen Kanan/Kiri</label><input type="number" id="set_k_kk" step="0.1"></div>
+<div class="input-group"><label>Kusen Atas</label><input type="number" id="set_k_a" step="0.1"></div>
+<div class="input-group"><label>Daun Kanan/Kiri</label><input type="number" id="set_d_kk" step="0.1"></div>
+<div class="input-group"><label>Daun Atas/Bawah</label><input type="number" id="set_d_ab" step="0.1"></div>
+</div>
+<button class="btn-save" onclick="aksiSimpanRumus()">💾 Simpan Perubahan</button>
+<button class="btn-reset" onclick="resetRumus()">🔄 Kembalikan Default</button>
+</div>
+</div>
+
+<div id="section-kaca" class="section-kaca">
+<div class="qty-box" style="border-color: #e67e22; background: #fff5e6;">
+<label>Jumlah Kaca (Lembar):</label>
+<input type="number" id="kaca_jml" value="1" min="1">
+</div>
+<div class="input-group">
+<label>Jenis Kaca</label>
+<select id="jenisKaca">
+<option value="riben">Kaca Riben</option>
+<option value="bening">Kaca Bening</option>
+<option value="cermin">Cermin</option>
+</select>
+</div>
+<div class="grid-input">
+<div class="input-group"><label>Lebar (cm)</label><input type="number" id="kaca_lebar" placeholder="0"></div>
+<div class="input-group"><label>Tinggi (cm)</label><input type="number" id="kaca_tinggi" placeholder="0"></div>
+</div>
+<button class="hitung-btn" style="background: #e67e22; margin-bottom: 0;" onclick="hitungKaca()">HITUNG HARGA KACA</button>
+
+<button class="settings-btn" onclick="toggleSettings()">⚙️ Atur Harga per m²</button>
+<div id="settingsArea">
+<div class="input-group"><label>Harga Riben (/m²)</label><input type="number" id="setRiben" onchange="simpanHargaKaca()"></div>
+<div class="input-group"><label>Harga Bening (/m²)</label><input type="number" id="setBening" onchange="simpanHargaKaca()"></div>
+<div class="input-group"><label>Harga Cermin (/m²)</label><input type="number" id="setCermin" onchange="simpanHargaKaca()"></div>
+</div>
+</div>
+
+<div id="hasil" class="result">
+<div id="hasil-pintu-detail">
+<div class="result-item">
+<div class="res-text"><h4>Kusen (Kanan | Kiri | Atas)</h4><div id="res-kusen"></div></div>
+</div>
+<div class="result-item">
+<div class="res-text"><h4>Daun (Kanan | Kiri | Atas | Bawah)</h4><div id="res-daun"></div></div>
+</div>
+<div class="bahan-box result-item" style="border-left-color: #27ae60;" id="res-bahan"></div>
+</div>
+
+<div id="hasil-kaca-detail" style="display:none;">
+<div class="result-item" style="border-left-color: #e67e22;">
+<div class="res-text"><h4 style="color:#e67e22;">Estimasi Harga Total Kaca</h4><div id="totalTampil" style="font-size: 24px; color: #2c3e50;">Rp 0</div></div>
+</div>
+</div>
+
+<button class="wa-btn" onclick="shareWA()">Kirim Laporan WA</button>
+<button class="print-btn" onclick="window.print()">🖨️ Cetak / PDF</button>
+</div>
+
+<div id="riwayat-section">
+<h3 style="font-size: 14px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">RIWAYAT</h3>
+<div style="overflow-x: auto;">
+<table>
+<thead><tr><th>Tipe</th><th>Ukuran</th><th>Hasil</th><th>Aksi</th></tr></thead>
+<tbody id="body-riwayat"></tbody>
+</table>
+</div>
+</div>
+
+<div class="footer-credit">CREATED BY ABU ZAID</div>
+</div>
+
+<script>
+// ==================== PWA CONFIGURATION ====================
+// Mendaftarkan Service Worker secara dinamis untuk support Offline
+const swCode = `
+const CACHE_NAME = 'abu-zaid-cache-v1';
+self.addEventListener('install', event => { self.skipWaiting(); });
+self.addEventListener('activate', event => { event.waitUntil(clients.claim()); });
+self.addEventListener('fetch', event => {
+event.respondWith(fetch(event.request).catch(() => new Response('Anda sedang offline.')));
+});
+`;
+const swBlob = new Blob([swCode], { type: 'application/javascript' });
+const swUrl = URL.createObjectURL(swBlob);
+
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register(swUrl).then(reg => {
+console.log('PWA ServiceWorker berhasil didaftarkan');
+}).catch(err => console.log('PWA SW Error', err));
+}
+
+// Logic Install Prompt (Muncul di Chrome/Edge/Android)
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+e.preventDefault();
+deferredPrompt = e;
+document.getElementById('install-btn').style.display = 'block'; // Tampilkan tombol
+});
+
+function installApp() {
+if (deferredPrompt) {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then((choiceResult) => {
+if (choiceResult.outcome === 'accepted') {
+console.log('Aplikasi berhasil diinstal');
+}
+deferredPrompt = null;
+document.getElementById('install-btn').style.display = 'none';
+});
+}
+}
+// ===========================================================
+
+let mode = 'swing';
+let dataLaporan = {};
+
+// Pengaturan Rumus Default (Setingan Utama)
+const defaultRumus = {
+swing: { k_kk: 0.3, k_a: 9.3, d_kk: 1.8, d_ab: 23.2 },
+lipat: { k_kk: 0.3, k_a: 9.3, d_kk: 1.8, d_ab: 17.0 },
+km: { k_kk: 0.3, k_a: 7.7, d_kk: 5.3, d_ab: 18.7 }
+};
+
+// Ambil Rumus dari LocalStorage (Jika ada)
+let currentRumus = JSON.parse(localStorage.getItem('rumusAbuZaidApp')) || JSON.parse(JSON.stringify(defaultRumus));
+
+window.onload = function() {
+tampilkanRiwayat();
+updateRumusUI();
+
+const savedKaca = localStorage.getItem('hargaKacaApp');
+if(savedKaca) {
+const data = JSON.parse(savedKaca);
+document.getElementById('setRiben').value = data.riben || "";
+document.getElementById('setBening').value = data.bening || "";
+document.getElementById('setCermin').value = data.cermin || "";
+}
+};
+
+function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+
+function toggleSettings() {
+const area = document.getElementById('settingsArea');
+area.style.display = area.style.display === 'block' ? 'none' : 'block';
+}
+
+function toggleRumusSettings() {
+const area = document.getElementById('rumusSettingsArea');
+area.style.display = area.style.display === 'block' ? 'none' : 'block';
+}
+
+function updateRumusUI() {
+if (mode === 'kaca') return;
+const r = currentRumus[mode];
+document.getElementById('set_k_kk').value = r.k_kk;
+document.getElementById('set_k_a').value = r.k_a;
+document.getElementById('set_d_kk').value = r.d_kk;
+document.getElementById('set_d_ab').value = r.d_ab;
+document.getElementById('label-rumus-aktif').innerText = mode.toUpperCase();
+}
+
+function aksiSimpanRumus() {
+currentRumus[mode].k_kk = parseFloat(document.getElementById('set_k_kk').value) || 0;
+currentRumus[mode].k_a = parseFloat(document.getElementById('set_k_a').value) || 0;
+currentRumus[mode].d_kk = parseFloat(document.getElementById('set_d_kk').value) || 0;
+currentRumus[mode].d_ab = parseFloat(document.getElementById('set_d_ab').value) || 0;
+
+localStorage.setItem('rumusAbuZaidApp', JSON.stringify(currentRumus));
+
+alert("Rumus pengurangan untuk pintu " + mode.toUpperCase() + " berhasil disimpan!");
+toggleRumusSettings();
+}
+
+function resetRumus() {
+currentRumus[mode] = JSON.parse(JSON.stringify(defaultRumus[mode]));
+updateRumusUI();
+
+localStorage.setItem('rumusAbuZaidApp', JSON.stringify(currentRumus));
+
+alert("Rumus " + mode.toUpperCase() + " telah dikembalikan ke pengaturan bawaan utama.");
+}
+
+function switchTab(type) {
+mode = type;
+document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('btn-' + type).classList.add('active');
+document.getElementById('hasil').style.display = 'none';
+
+if (type === 'kaca') {
+document.getElementById('section-pintu').classList.remove('active-section');
+document.getElementById('section-kaca').classList.add('active-section');
+} else {
+document.getElementById('section-kaca').classList.remove('active-section');
+document.getElementById('section-pintu').classList.add('active-section');
+updateRumusUI();
+document.getElementById('rumusSettingsArea').style.display = 'none';
+}
+}
+
+function hitungPintu() {
+const pk = parseFloat(document.getElementById('p_kanan').value) || 0;
+const pi = parseFloat(document.getElementById('p_kiri').value) || 0;
+const la = parseFloat(document.getElementById('l_atas').value) || 0;
+const lb = parseFloat(document.getElementById('l_bawah').value) || 0;
+const jml = parseInt(document.getElementById('jml_pintu').value) || 1;
+
+if (pk === 0 || la === 0) { alert("Ukuran belum lengkap!"); return; }
+
+let k_val, d_val, label;
+let meterLari = 0;
+
+const r = currentRumus[mode];
+
+if (mode === 'swing') label = "Swing";
+else if (mode === 'lipat') label = "Lipat";
+else label = "KM";
+
+const kn = pk - r.k_kk;
+const kr = pi - r.k_kk;
+const at = la - r.k_a;
+
+const dkn = pk - r.d_kk;
+const dkr = pi - r.d_kk;
+const dat = la - r.d_ab;
+const dbw = lb - r.d_ab;
+
+k_val = `${kn.toFixed(1)}|${kr.toFixed(1)}|${at.toFixed(1)}`;
+d_val = `${dkn.toFixed(1)}|${dkr.toFixed(1)}|${dat.toFixed(1)}|${dbw.toFixed(1)}`;
+meterLari = (kn + kr + at + dkn + dkr + dat + dbw) / 100;
+
+document.getElementById('res-kusen').innerText = k_val;
+document.getElementById('res-daun').innerText = d_val;
+const jmlBatang = Math.ceil((meterLari * jml) / 6);
+document.getElementById('res-bahan').innerHTML = `<b>Estimasi Bahan:</b> ${jmlBatang} Batang`;
+
+document.getElementById('hasil').style.display = 'block';
+document.getElementById('hasil-pintu-detail').style.display = 'block';
+document.getElementById('hasil-kaca-detail').style.display = 'none';
+
+dataLaporan = { type: 'Pintu', label, size: `${pk}x${la}`, result: d_val, full: `Pintu ${label} (${pk}x${la})\nKusen: ${k_val}\nDaun: ${d_val}\nBahan: ${jmlBatang} Btg` };
+simpanRiwayat(dataLaporan);
+}
+
+function hitungKaca() {
+const jenis = document.getElementById('jenisKaca').value;
+const L = parseFloat(document.getElementById('kaca_lebar').value) || 0;
+const T = parseFloat(document.getElementById('kaca_tinggi').value) || 0;
+const jml = parseInt(document.getElementById('kaca_jml').value) || 1;
+const idSetelan = 'set' + jenis.charAt(0).toUpperCase() + jenis.slice(1);
+const hargaM2 = parseFloat(document.getElementById(idSetelan).value) || 0;
+
+if (L <= 0 || T <= 0 || hargaM2 <= 0) { alert("Isi ukuran & harga m2!"); return; }
+
+const m2PerLembar = (L / 100) * (T / 100);
+const totalHarga = m2PerLembar * hargaM2 * jml;
+const totalIDR = "Rp " + Math.round(totalHarga).toLocaleString('id-ID');
+
+document.getElementById('totalTampil').innerText = totalIDR;
+document.getElementById('hasil').style.display = 'block';
+document.getElementById('hasil-pintu-detail').style.display = 'none';
+document.getElementById('hasil-kaca-detail').style.display = 'block';
+
+dataLaporan = { type: 'Kaca', label: jenis.toUpperCase(), size: `${L}x${T} (${jml} lbr)`, result: totalIDR, full: `Kaca ${jenis} ${L}x${T}\nJumlah: ${jml} Lembar\nTotal: ${totalIDR}` };
+simpanRiwayat(dataLaporan);
+}
+
+function simpanHargaKaca() {
+const data = { riben: document.getElementById('setRiben').value, bening: document.getElementById('setBening').value, cermin: document.getElementById('setCermin').value };
+localStorage.setItem('hargaKacaApp', JSON.stringify(data));
+}
+
+function simpanRiwayat(data) {
+let riwayat = JSON.parse(localStorage.getItem('riwayat_abu_zaid')) || [];
+riwayat.unshift(data);
+if (riwayat.length > 10) riwayat.pop();
+localStorage.setItem('riwayat_abu_zaid', JSON.stringify(riwayat));
+tampilkanRiwayat();
+}
+
+function tampilkanRiwayat() {
+const riwayat = JSON.parse(localStorage.getItem('riwayat_abu_zaid')) || [];
+const container = document.getElementById('body-riwayat');
+container.innerHTML = '';
+riwayat.forEach((item, index) => {
+container.innerHTML += `<tr><td>${item.label}</td><td>${item.size}</td><td>${item.result}</td><td><button onclick="hapusRiwayat(${index})" style="background:none; border:none; cursor:pointer;">🗑️</button></td></tr>`;
+});
+}
+
+function hapusRiwayat(i) {
+let r = JSON.parse(localStorage.getItem('riwayat_abu_zaid'));
+r.splice(i, 1);
+localStorage.setItem('riwayat_abu_zaid', JSON.stringify(r));
+tampilkanRiwayat();
+}
+
+function shareWA() {
+let text = `*LAPORAN PEKERJAAN*%0A${dataLaporan.full}%0A%0A_Created by Abu Zaid_`;
+window.open("https://api.whatsapp.com/send?text=" + text, "_blank");
+}
+</script>
+
+</body>
+</html>
