@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Abu Zaid">
-<link rel="apple-touch-icon" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="manifest" href="./manifest.json">
 <title>Kalkulator Abu Zaid</title>
 
@@ -182,8 +182,6 @@ th { background: var(--primary); color: white; }
 
 <script>
 // ==================== PWA CONFIGURATION ====================
-// Mendaftarkan Service Worker secara dinamis untuk support Offline // ==================== PWA CONFIGURATION ====================
-// Mendaftarkan Service Worker dari file sw.js
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
@@ -192,45 +190,24 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Logic Install Prompt
-let deferredPrompt;
-// ... (biarkan sisa kode ke bawahnya tetap sama)
-const swCode = `
-const CACHE_NAME = 'abu-zaid-cache-v1';
-self.addEventListener('install', event => { self.skipWaiting(); });
-self.addEventListener('activate', event => { event.waitUntil(clients.claim()); });
-self.addEventListener('fetch', event => {
-event.respondWith(fetch(event.request).catch(() => new Response('Anda sedang offline.')));
-});
-`;
-const swBlob = new Blob([swCode], { type: 'application/javascript' });
-const swUrl = URL.createObjectURL(swBlob);
-
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register(swUrl).then(reg => {
-console.log('PWA ServiceWorker berhasil didaftarkan');
-}).catch(err => console.log('PWA SW Error', err));
-}
-
-// Logic Install Prompt (Muncul di Chrome/Edge/Android)
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
-e.preventDefault();
-deferredPrompt = e;
-document.getElementById('install-btn').style.display = 'block'; // Tampilkan tombol
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-btn').style.display = 'block';
 });
 
 function installApp() {
-if (deferredPrompt) {
-deferredPrompt.prompt();
-deferredPrompt.userChoice.then((choiceResult) => {
-if (choiceResult.outcome === 'accepted') {
-console.log('Aplikasi berhasil diinstal');
-}
-deferredPrompt = null;
-document.getElementById('install-btn').style.display = 'none';
-});
-}
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Aplikasi berhasil diinstal');
+      }
+      deferredPrompt = null;
+      document.getElementById('install-btn').style.display = 'none';
+    });
+  }
 }
 // ===========================================================
 
