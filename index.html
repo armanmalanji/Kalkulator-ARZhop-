@@ -182,7 +182,19 @@ th { background: var(--primary); color: white; }
 
 <script>
 // ==================== PWA CONFIGURATION ====================
-// Mendaftarkan Service Worker secara dinamis untuk support Offline
+// Mendaftarkan Service Worker secara dinamis untuk support Offline // ==================== PWA CONFIGURATION ====================
+// Mendaftarkan Service Worker dari file sw.js
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Offline Mode Aktif!'))
+      .catch(err => console.log('Gagal mengaktifkan offline:', err));
+  });
+}
+
+// Logic Install Prompt
+let deferredPrompt;
+// ... (biarkan sisa kode ke bawahnya tetap sama)
 const swCode = `
 const CACHE_NAME = 'abu-zaid-cache-v1';
 self.addEventListener('install', event => { self.skipWaiting(); });
