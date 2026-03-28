@@ -36,6 +36,7 @@ h2 { margin: 0; color: var(--secondary); font-size: 18px; letter-spacing: 1px; }
 .active-section { display: block; }
 
 .grid-input { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.grid-input-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .input-group { margin-bottom: 10px; }
 label { display: block; font-size: 11px; margin-bottom: 4px; font-weight: bold; opacity: 0.8; }
 input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; background: var(--card); color: var(--text); font-size: 16px; outline: none; box-sizing: border-box; }
@@ -47,8 +48,13 @@ button.hitung-btn { width: 100%; padding: 16px; background: #27ae60; color: whit
 
 .result { margin-top: 10px; display: none; }
 .result-item { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-left: 8px solid var(--primary); position: relative; }
-.res-text h4 { margin: 0; color: var(--primary); font-size: 11px; text-transform: uppercase; }
-.res-text div { font-weight: bold; font-size: 18px; color: #d35400; margin-top: 5px; }
+.res-text h4 { margin: 0; color: var(--primary); font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-bottom: 5px; }
+
+/* CSS BARU UNTUK HASIL VERTIKAL */
+.val-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #ccc; padding: 6px 0; font-size: 14px; color: var(--secondary); align-items: center; }
+.val-row:last-child { border-bottom: none; padding-bottom: 0; }
+.val-row b { color: #d35400; font-size: 18px; }
+.dark-mode .val-row { border-bottom-color: #555; color: #ccc; }
 
 .wa-btn { width: 100%; padding: 15px; background: #25d366; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; display: block; text-decoration: none; text-align: center; }
 .print-btn { width: 100%; padding: 15px; background: #34495e; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -68,7 +74,7 @@ th { background: var(--primary); color: white; }
 .footer-credit { text-align: center; font-size: 15px; color: var(--secondary); margin-top: 30px; font-weight: bold; border-top: 2px solid var(--primary); padding-top: 15px; letter-spacing: 1px; }
 
 @media print {
-.theme-toggle, .install-btn, .tab-menu, .qty-box, .grid-input, .hitung-btn, .wa-btn, .print-btn, #riwayat-section, .settings-btn, #settingsArea, #rumusSettingsArea, .footer-credit { display: none !important; }
+.theme-toggle, .install-btn, .tab-menu, .qty-box, .grid-input, .grid-input-3, .hitung-btn, .wa-btn, .print-btn, #riwayat-section, .settings-btn, #settingsArea, #rumusSettingsArea, .footer-credit { display: none !important; }
 .result { display: block !important; }
 .container { box-shadow: none; width: 100%; border: none; }
 }
@@ -99,21 +105,33 @@ th { background: var(--primary); color: white; }
 </div>
 <div class="grid-input">
 <div class="input-group"><label>Plong Kanan</label><input type="number" id="p_kanan" placeholder="0.0"></div>
-<div class="input-group"><label>Plong Kiri</label><input type="number" id="p_kiri" placeholder="0.0"></div>
+<div class="input-group"><label>Plong Kiri</label><input type="number" id="p_kiri" placeholder="Otomatis"></div>
 <div class="input-group"><label>Plong Atas</label><input type="number" id="l_atas" placeholder="0.0"></div>
-<div class="input-group"><label>Plong Bawah</label><input type="number" id="l_bawah" placeholder="0.0"></div>
+<div class="input-group"><label>Plong Bawah</label><input type="number" id="l_bawah" placeholder="Otomatis"></div>
 </div>
 <button class="hitung-btn" onclick="hitungPintu()">PROSES POTONGAN</button>
 
 <button class="settings-btn" onclick="toggleRumusSettings()">⚙️ Atur Rumus <span id="label-rumus-aktif">Swing</span></button>
 <div id="rumusSettingsArea">
-<p style="margin-top:0; font-size:12px; font-weight:bold; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">Pengurangan (-)</p>
+<p style="margin-top:0; font-size:12px; font-weight:bold; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">Kusen (-)</p>
 <div class="grid-input">
-<div class="input-group"><label>Kusen Kanan/Kiri</label><input type="number" id="set_k_kk" step="0.1"></div>
-<div class="input-group"><label>Kusen Atas</label><input type="number" id="set_k_a" step="0.1"></div>
-<div class="input-group"><label>Daun Kanan/Kiri</label><input type="number" id="set_d_kk" step="0.1"></div>
-<div class="input-group"><label>Daun Atas/Bawah</label><input type="number" id="set_d_ab" step="0.1"></div>
+<div class="input-group"><label>Kanan/Kiri</label><input type="number" id="set_k_kk" step="0.1"></div>
+<div class="input-group"><label>Atas</label><input type="number" id="set_k_a" step="0.1"></div>
 </div>
+
+<p style="margin-top:5px; font-size:12px; font-weight:bold; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">Tatapan / Totokan (-)</p>
+<div class="grid-input">
+<div class="input-group"><label>Kanan/Kiri</label><input type="number" id="set_t_kk" step="0.1"></div>
+<div class="input-group"><label>Atas</label><input type="number" id="set_t_a" step="0.1"></div>
+</div>
+
+<p style="margin-top:5px; font-size:12px; font-weight:bold; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">Daun Pintu (-)</p>
+<div class="grid-input-3">
+<div class="input-group"><label>Kanan/Kiri</label><input type="number" id="set_d_kk" step="0.1"></div>
+<div class="input-group"><label>Atas</label><input type="number" id="set_d_a" step="0.1"></div>
+<div class="input-group"><label>Bawah</label><input type="number" id="set_d_b" step="0.1"></div>
+</div>
+
 <button class="btn-save" onclick="aksiSimpanRumus()">💾 Simpan Perubahan</button>
 <button class="btn-reset" onclick="resetRumus()">🔄 Kembalikan Default</button>
 </div>
@@ -149,17 +167,20 @@ th { background: var(--primary); color: white; }
 <div id="hasil" class="result">
 <div id="hasil-pintu-detail">
 <div class="result-item">
-<div class="res-text"><h4>Kusen (Kanan | Kiri | Atas)</h4><div id="res-kusen"></div></div>
+<div class="res-text"><h4>POTONGAN KUSEN</h4><div id="res-kusen"></div></div>
+</div>
+<div class="result-item" id="box-tatapan">
+<div class="res-text"><h4>POTONGAN TATAPAN</h4><div id="res-tatapan"></div></div>
 </div>
 <div class="result-item">
-<div class="res-text"><h4>Daun (Kanan | Kiri | Atas | Bawah)</h4><div id="res-daun"></div></div>
+<div class="res-text"><h4>POTONGAN DAUN</h4><div id="res-daun"></div></div>
 </div>
 <div class="bahan-box result-item" style="border-left-color: #27ae60;" id="res-bahan"></div>
 </div>
 
 <div id="hasil-kaca-detail" style="display:none;">
 <div class="result-item" style="border-left-color: #e67e22;">
-<div class="res-text"><h4 style="color:#e67e22;">Estimasi Harga Total Kaca</h4><div id="totalTampil" style="font-size: 24px; color: #2c3e50;">Rp 0</div></div>
+<div class="res-text"><h4 style="color:#e67e22;">Estimasi Harga Total Kaca</h4><div id="totalTampil" style="font-size: 24px; color: #2c3e50; margin-top: 10px;">Rp 0</div></div>
 </div>
 </div>
 
@@ -183,46 +204,64 @@ th { background: var(--primary); color: white; }
 <script>
 // ==================== PWA CONFIGURATION ====================
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Offline Mode Aktif!'))
-      .catch(err => console.log('Gagal mengaktifkan offline:', err));
-  });
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('./sw.js')
+.then(reg => console.log('Offline Mode Aktif!'))
+.catch(err => console.log('Gagal mengaktifkan offline:', err));
+});
 }
 
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('install-btn').style.display = 'block';
+e.preventDefault();
+deferredPrompt = e;
+document.getElementById('install-btn').style.display = 'block';
 });
 
 function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('Aplikasi berhasil diinstal');
-      }
-      deferredPrompt = null;
-      document.getElementById('install-btn').style.display = 'none';
-    });
-  }
+if (deferredPrompt) {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then((choiceResult) => {
+if (choiceResult.outcome === 'accepted') {
+console.log('Aplikasi berhasil diinstal');
+}
+deferredPrompt = null;
+document.getElementById('install-btn').style.display = 'none';
+});
+}
 }
 // ===========================================================
 
 let mode = 'swing';
 let dataLaporan = {};
 
-// Pengaturan Rumus Default (Setingan Utama)
+// Pengaturan Rumus Default (Disesuaikan dengan Excel)
 const defaultRumus = {
-swing: { k_kk: 0.3, k_a: 9.3, d_kk: 1.8, d_ab: 23.2 },
-lipat: { k_kk: 0.3, k_a: 9.3, d_kk: 1.8, d_ab: 17.0 },
-km: { k_kk: 0.3, k_a: 7.7, d_kk: 5.3, d_ab: 18.7 }
+swing: {
+k_kk: 0.3, k_a: 9.3,
+t_kk: 4.9, t_a: 9.3,
+d_kk: 1.8, d_a: 8.4, d_b: 23.2
+},
+lipat: {
+k_kk: 0.3, k_a: 9.3,
+t_kk: 0, t_a: 0,
+d_kk: 1.8, d_a: 17.0, d_b: 17.0
+},
+km: {
+k_kk: 0.3, k_a: 7.7,
+t_kk: 4.0, t_a: 7.8,
+d_kk: 5.3, d_a: 18.7, d_b: 18.7
+}
 };
 
-// Ambil Rumus dari LocalStorage (Jika ada)
-let currentRumus = JSON.parse(localStorage.getItem('rumusAbuZaidApp')) || JSON.parse(JSON.stringify(defaultRumus));
+let savedRumus = JSON.parse(localStorage.getItem('rumusAbuZaidApp'));
+let currentRumus = JSON.parse(JSON.stringify(defaultRumus));
+
+if (savedRumus && savedRumus.swing && savedRumus.swing.t_kk !== undefined) {
+currentRumus = savedRumus;
+} else {
+localStorage.setItem('rumusAbuZaidApp', JSON.stringify(currentRumus));
+}
 
 window.onload = function() {
 tampilkanRiwayat();
@@ -252,18 +291,30 @@ area.style.display = area.style.display === 'block' ? 'none' : 'block';
 function updateRumusUI() {
 if (mode === 'kaca') return;
 const r = currentRumus[mode];
+
 document.getElementById('set_k_kk').value = r.k_kk;
 document.getElementById('set_k_a').value = r.k_a;
+
+document.getElementById('set_t_kk').value = r.t_kk;
+document.getElementById('set_t_a').value = r.t_a;
+
 document.getElementById('set_d_kk').value = r.d_kk;
-document.getElementById('set_d_ab').value = r.d_ab;
+document.getElementById('set_d_a').value = r.d_a;
+document.getElementById('set_d_b').value = r.d_b;
+
 document.getElementById('label-rumus-aktif').innerText = mode.toUpperCase();
 }
 
 function aksiSimpanRumus() {
 currentRumus[mode].k_kk = parseFloat(document.getElementById('set_k_kk').value) || 0;
 currentRumus[mode].k_a = parseFloat(document.getElementById('set_k_a').value) || 0;
+
+currentRumus[mode].t_kk = parseFloat(document.getElementById('set_t_kk').value) || 0;
+currentRumus[mode].t_a = parseFloat(document.getElementById('set_t_a').value) || 0;
+
 currentRumus[mode].d_kk = parseFloat(document.getElementById('set_d_kk').value) || 0;
-currentRumus[mode].d_ab = parseFloat(document.getElementById('set_d_ab').value) || 0;
+currentRumus[mode].d_a = parseFloat(document.getElementById('set_d_a').value) || 0;
+currentRumus[mode].d_b = parseFloat(document.getElementById('set_d_b').value) || 0;
 
 localStorage.setItem('rumusAbuZaidApp', JSON.stringify(currentRumus));
 
@@ -274,10 +325,8 @@ toggleRumusSettings();
 function resetRumus() {
 currentRumus[mode] = JSON.parse(JSON.stringify(defaultRumus[mode]));
 updateRumusUI();
-
 localStorage.setItem('rumusAbuZaidApp', JSON.stringify(currentRumus));
-
-alert("Rumus " + mode.toUpperCase() + " telah dikembalikan ke pengaturan bawaan utama.");
+alert("Rumus " + mode.toUpperCase() + " telah dikembalikan ke pengaturan bawaan utama (Excel).");
 }
 
 function switchTab(type) {
@@ -299,45 +348,68 @@ document.getElementById('rumusSettingsArea').style.display = 'none';
 
 function hitungPintu() {
 const pk = parseFloat(document.getElementById('p_kanan').value) || 0;
-const pi = parseFloat(document.getElementById('p_kiri').value) || 0;
 const la = parseFloat(document.getElementById('l_atas').value) || 0;
-const lb = parseFloat(document.getElementById('l_bawah').value) || 0;
+
+if (pk === 0 || la === 0) { alert("Ukuran Plong Kanan & Atas wajib diisi!"); return; }
+
+const pi = parseFloat(document.getElementById('p_kiri').value) || pk;
+const lb = parseFloat(document.getElementById('l_bawah').value) || la;
 const jml = parseInt(document.getElementById('jml_pintu').value) || 1;
 
-if (pk === 0 || la === 0) { alert("Ukuran belum lengkap!"); return; }
-
-let k_val, d_val, label;
-let meterLari = 0;
-
+let label;
 const r = currentRumus[mode];
 
 if (mode === 'swing') label = "Swing";
 else if (mode === 'lipat') label = "Lipat";
 else label = "KM";
 
-const kn = pk - r.k_kk;
-const kr = pi - r.k_kk;
-const at = la - r.k_a;
+// Perhitungan
+const kn = pk - r.k_kk; const kr = pi - r.k_kk; const at = la - r.k_a;
+const tkn = pk - r.t_kk; const tkr = pi - r.t_kk; const tat = la - r.t_a;
+const dkn = pk - r.d_kk; const dkr = pi - r.d_kk; const dat = la - r.d_a; const dbw = lb - r.d_b;
 
-const dkn = pk - r.d_kk;
-const dkr = pi - r.d_kk;
-const dat = la - r.d_ab;
-const dbw = lb - r.d_ab;
+// Helper Format Tampilan Layar (Vertikal Baris)
+const formatBaris = (lbl, val) => `<div class="val-row"><span>${lbl}</span> <b>${val.toFixed(1)} cm</b></div>`;
 
-k_val = `${kn.toFixed(1)}|${kr.toFixed(1)}|${at.toFixed(1)}`;
-d_val = `${dkn.toFixed(1)}|${dkr.toFixed(1)}|${dat.toFixed(1)}|${dbw.toFixed(1)}`;
-meterLari = (kn + kr + at + dkn + dkr + dat + dbw) / 100;
+const htmlKusen = formatBaris('Kanan', kn) + formatBaris('Kiri', kr) + formatBaris('Atas', at);
+const htmlTatapan = formatBaris('Kanan', tkn) + formatBaris('Kiri', tkr) + formatBaris('Atas', tat);
+const htmlDaun = formatBaris('Kanan', dkn) + formatBaris('Kiri', dkr) + formatBaris('Atas', dat) + formatBaris('Bawah', dbw);
 
-document.getElementById('res-kusen').innerText = k_val;
-document.getElementById('res-daun').innerText = d_val;
+// Helper Format Text untuk WA (Vertikal Baris)
+const waKusen = `\n - Kanan = ${kn.toFixed(1)} cm\n - Kiri = ${kr.toFixed(1)} cm\n - Atas = ${at.toFixed(1)} cm`;
+const waTatapan = `\n - Kanan = ${tkn.toFixed(1)} cm\n - Kiri = ${tkr.toFixed(1)} cm\n - Atas = ${tat.toFixed(1)} cm`;
+const waDaun = `\n - Kanan = ${dkn.toFixed(1)} cm\n - Kiri = ${dkr.toFixed(1)} cm\n - Atas = ${dat.toFixed(1)} cm\n - Bawah = ${dbw.toFixed(1)} cm`;
+
+// Kalkulasi Total Meter Lari
+let totalLength = kn + kr + at + dkn + dkr + dat + dbw;
+if(r.t_kk > 0 || r.t_a > 0) totalLength += (tkn + tkr + tat);
+const meterLari = totalLength / 100;
 const jmlBatang = Math.ceil((meterLari * jml) / 6);
-document.getElementById('res-bahan').innerHTML = `<b>Estimasi Bahan:</b> ${jmlBatang} Batang`;
+
+// Update Layar
+document.getElementById('res-kusen').innerHTML = htmlKusen;
+
+let txtTatapanLaporan = "";
+if (r.t_kk !== 0 || r.t_a !== 0 || mode !== 'lipat') {
+document.getElementById('box-tatapan').style.display = 'block';
+document.getElementById('res-tatapan').innerHTML = htmlTatapan;
+txtTatapanLaporan = `\n*Tatapan:*${waTatapan}\n`;
+} else {
+document.getElementById('box-tatapan').style.display = 'none';
+}
+
+document.getElementById('res-daun').innerHTML = htmlDaun;
+document.getElementById('res-bahan').innerHTML = `<div style="padding-top:5px;"><b>Estimasi Total Bahan:</b> ${jmlBatang} Batang</div>`;
 
 document.getElementById('hasil').style.display = 'block';
 document.getElementById('hasil-pintu-detail').style.display = 'block';
 document.getElementById('hasil-kaca-detail').style.display = 'none';
 
-dataLaporan = { type: 'Pintu', label, size: `${pk}x${la}`, result: d_val, full: `Pintu ${label} (${pk}x${la})\nKusen: ${k_val}\nDaun: ${d_val}\nBahan: ${jmlBatang} Btg` };
+// Update Data Laporan
+const fullReport = `*Pintu ${label} (${pk}x${la})*\n\n*Kusen:*${waKusen}\n${txtTatapanLaporan}\n*Daun:*${waDaun}\n\n*Bahan:* ${jmlBatang} Btg`;
+const riwayatTampil = `${dkn.toFixed(1)} | ${dkr.toFixed(1)} | ${dat.toFixed(1)}`;
+
+dataLaporan = { type: 'Pintu', label, size: `${pk}x${la}`, result: riwayatTampil, full: fullReport };
 simpanRiwayat(dataLaporan);
 }
 
@@ -360,7 +432,7 @@ document.getElementById('hasil').style.display = 'block';
 document.getElementById('hasil-pintu-detail').style.display = 'none';
 document.getElementById('hasil-kaca-detail').style.display = 'block';
 
-dataLaporan = { type: 'Kaca', label: jenis.toUpperCase(), size: `${L}x${T} (${jml} lbr)`, result: totalIDR, full: `Kaca ${jenis} ${L}x${T}\nJumlah: ${jml} Lembar\nTotal: ${totalIDR}` };
+dataLaporan = { type: 'Kaca', label: jenis.toUpperCase(), size: `${L}x${T} (${jml} lbr)`, result: totalIDR, full: `*Kaca ${jenis} ${L}x${T}*\nJumlah: ${jml} Lembar\nTotal: ${totalIDR}` };
 simpanRiwayat(dataLaporan);
 }
 
@@ -382,7 +454,7 @@ const riwayat = JSON.parse(localStorage.getItem('riwayat_abu_zaid')) || [];
 const container = document.getElementById('body-riwayat');
 container.innerHTML = '';
 riwayat.forEach((item, index) => {
-container.innerHTML += `<tr><td>${item.label}</td><td>${item.size}</td><td>${item.result}</td><td><button onclick="hapusRiwayat(${index})" style="background:none; border:none; cursor:pointer;">🗑️</button></td></tr>`;
+container.innerHTML += `<tr><td>${item.label}</td><td>${item.size}</td><td>${item.result}</td><td><button onclick="hapusRiwayat(${index})" style="background:none; border:none; cursor:pointer; font-size:14px;">🗑️</button></td></tr>`;
 });
 }
 
@@ -394,7 +466,7 @@ tampilkanRiwayat();
 }
 
 function shareWA() {
-let text = `*LAPORAN PEKERJAAN*%0A${dataLaporan.full}%0A%0A_Created by Abu Zaid_`;
+let text = `*LAPORAN PEKERJAAN*%0A%0A${encodeURIComponent(dataLaporan.full)}%0A%0A_Created by Abu Zaid_`;
 window.open("https://api.whatsapp.com/send?text=" + text, "_blank");
 }
 </script>
